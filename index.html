@@ -91,14 +91,22 @@
   </div>
 
   <script>
-    const horses = [];
+  
+const horses = JSON.parse(localStorage.getItem("boss_horses") || "[]");
+
 
 function removeHorse(index) {
   horses.splice(index, 1);
   updatePreview();
 }
 
+function saveHorses() {
+  localStorage.setItem("boss_horses", JSON.stringify(horses));
+}
+
 function updatePreview() {
+  saveHorses();
+
   const preview = document.getElementById("preview");
 
   if (horses.length === 0) {
@@ -203,6 +211,9 @@ updatePreview();
       a.click();
       URL.revokeObjectURL(url);
     }
+ 
+updatePreview();
+
   </script>
 </body>
 </html>
