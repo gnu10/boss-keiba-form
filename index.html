@@ -165,6 +165,28 @@ function updatePreview() {
 　　　　const weight = document.getElementById("weight").value;
 　　　　const jockey = document.getElementById("jockey").value.trim();
 
+if (
+  !frame ||
+  !horseNumber ||
+  !weight ||
+  !jockey
+) {
+  alert("枠番・馬番・斤量・騎手をすべて入力してください");
+  return;
+}
+
+if (
+  Number(frame) < 1 ||
+  Number(frame) > 8 ||
+  Number(horseNumber) < 1 ||
+  Number(horseNumber) > 18 ||
+  Number(weight) < 40 ||
+  Number(weight) > 70
+) {
+  alert("枠番・馬番・斤量の数値を確認してください");
+  return;
+}
+
       if (!date || !race || !horseId || !horseName) {
         alert("すべて入力してください");
         return;
