@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>BOSS競馬AI</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f4f7;
+      padding: 16px;
+      color: #222;
+    }
+    h1 { text-align: center; }
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 12px auto;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    button {
+      background: #1463cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    #preview {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <h1>BOSS競馬AI</h1>
+
+  <div class="card">
+    <h2>出馬表入力</h2>
+
+    <label>開催日</label>
+    <input type="date" id="date">
+
+    <label>競馬場</label>
+    <select id="course">
+      <option>東京</option>
+      <option>中山</option>
+      <option>京都</option>
+      <option>阪神</option>
+      <option>中京</option>
+      <option>新潟</option>
+      <option>福島</option>
+      <option>小倉</option>
+      <option>札幌</option>
+      <option>函館</option>
+    </select>
+
+    <label>レース番号</label>
+    <input type="number" id="race" min="1" max="12">
+
+    <label>馬ID</label>
+    <input type="text" id="horseId">
+
+    <label>馬名</label>
+    <input type="text" id="horseName">
+
+    <button onclick="addHorse()">馬を追加</button>
+    <button onclick="downloadCSV()">
+      CSVをダウンロード
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>登録データ</h2>
+    <div id="preview">まだ登録されていません</div>
+  </div>
+
+  <script>
+    const horses = [];
+
+    function addHorse() {
+      const date = document.getElementById("date").value;
+      const course = document.getElementById("course").value;
+      const race = document.getElementById("race").value;
+      const horseId = document.getElementById("horseId").value.trim();
+      const horseName = document.getElementById("horseName").value.trim();
+
+      if (!date || !race || !horseId || !horseName) {
+        alert("すべて入力してください");
+        return;
+      }
+
+      if (+race < 1 || +race > 12) {
+        alert("レース番号は1〜12です");
+        return;
+      }
+
+      const raceId = date.replace(/-/g, "") +
+                     "_" + course + "_" + race;
+
+      if (horses.some(h =>
+        h.race_id === raceId && h.horse_id === horseId
+      )) {
+        alert("この馬は登録済みです");
+        return;
+      }
+
+      horses.push({
+        race_id: raceId,
+        date: date,
+        course: course,
+        race_number: race,
+        horse_id: horseId,
+        horse_name: horseName
+      });
+
+      document.getElementById("preview").textContent =
+        horses.map(h =>
+          h.date + " " + h.course + h.race_number +
+          "R / " + h.horse_name
+        ).join("\n");
+
+      document.getElementById("horseId").value = "";
+      document.getElementById("horseName").value = "";
+    }
+
+    function downloadCSV() {
+      if (horses.length === 0) {
+        alert("先に馬を登録してください");
+        return;
+      }
+
+      const fields = [
+        "race_id", "date", "course",
+        "race_number", "horse_id", "horse_name"
+      ];
+
+      const escapeCSV = value =>
+        '"' + String(value).replace(/"/g, '""') + '"';
+
+      const csv = [
+        fields.join(","),
+        ...horses.map(h =>
+          fields.map(f => escapeCSV(h[f])).join(",")
+        )
+      ].join("\r\n");
+
+      const blob = new Blob(
+        ["\uFEFF" + csv],
+        { type: "text/csv;charset=utf-8" }
+      );
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "entries.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
