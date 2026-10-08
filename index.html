@@ -160,6 +160,10 @@ function updatePreview() {
       const race = document.getElementById("race").value;
       const horseId = document.getElementById("horseId").value.trim();
       const horseName = document.getElementById("horseName").value.trim();
+　　　　const frame = document.getElementById("frame").value;
+　　　　const horseNumber = document.getElementById("horseNumber").value;
+　　　　const weight = document.getElementById("weight").value;
+　　　　const jockey = document.getElementById("jockey").value.trim();
 
       if (!date || !race || !horseId || !horseName) {
         alert("すべて入力してください");
@@ -181,14 +185,20 @@ function updatePreview() {
         return;
       }
 
-      horses.push({
-        race_id: raceId,
-        date: date,
-        course: course,
-        race_number: race,
-        horse_id: horseId,
-        horse_name: horseName
-      });
+    
+horses.push({
+  race_id: raceId,
+  date: date,
+  course: course,
+  race_number: race,
+  horse_id: horseId,
+  horse_name: horseName,
+  frame: frame,
+  horse_number: horseNumber,
+  weight: weight,
+  jockey: jockey
+});
+
 
 updatePreview();
       document.getElementByI("horseId").value = "";
@@ -201,10 +211,13 @@ updatePreview();
         return;
       }
 
-      const fields = [
-        "race_id", "date", "course",
-        "race_number", "horse_id", "horse_name"
-      ];
+      
+const fields = [
+  "race_id", "date", "course",
+  "race_number", "horse_id", "horse_name",
+  "frame", "horse_number", "weight", "jockey"
+];
+
 
       const escapeCSV = value =>
         '"' + String(value).replace(/"/g, '""') + '"';
