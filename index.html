@@ -83,6 +83,11 @@
     <button onclick="downloadCSV()">
       CSVをダウンロード
     </button>
+
+<button onclick="clearHorses()" style="background:#c0392b;">
+  登録データを全削除
+</button>
+
   </div>
 
   <div class="card">
@@ -212,6 +217,15 @@ updatePreview();
       URL.revokeObjectURL(url);
     }
  
+function clearHorses() {
+  if (!confirm("登録した馬をすべて削除しますか？")) {
+    return;
+  }
+
+  horses.length = 0;
+  updatePreview();
+}
+
 　　　updatePreview();
   </script>
 </body>
