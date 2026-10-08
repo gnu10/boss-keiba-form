@@ -93,6 +93,42 @@
   <script>
     const horses = [];
 
+function removeHorse(index) {
+  horses.splice(index, 1);
+  updatePreview();
+}
+
+function updatePreview() {
+  const preview = document.getElementById("preview");
+
+  if (horses.length === 0) {
+    preview.textContent = "まだ登録されていません";
+    return;
+  }
+
+  preview.innerHTML = "";
+
+  horses.forEach((horse, index) => {
+    const row = document.createElement("div");
+    row.style.padding = "10px 0";
+    row.style.borderBottom = "1px solid #ddd";
+
+    const name = document.createElement("span");
+    name.textContent =
+      horse.date + " " + horse.course +
+      horse.race_number + "R / " + horse.horse_name;
+
+    const button = document.createElement("button");
+    button.textContent = "削除";
+    button.style.background = "#c0392b";
+    button.onclick = () => removeHorse(index);
+
+    row.appendChild(name);
+    row.appendChild(button);
+    preview.appendChild(row);
+  });
+}
+
     function addHorse() {
       const date = document.getElementById("date").value;
       const course = document.getElementById("course").value;
@@ -129,13 +165,8 @@
         horse_name: horseName
       });
 
-      document.getElementById("preview").textContent =
-        horses.map(h =>
-          h.date + " " + h.course + h.race_number +
-          "R / " + h.horse_name
-        ).join("\n");
-
-      document.getElementById("horseId").value = "";
+updatePreview();
+      document.getElementByI("horseId").value = "";
       document.getElementById("horseName").value = "";
     }
 
